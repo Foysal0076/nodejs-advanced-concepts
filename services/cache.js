@@ -23,7 +23,6 @@ mongoose.Query.prototype.exec = async function () { // must use function keyword
   }
 
   const key = JSON.stringify(Object.assign({}, this.getQuery(), { collection: this.mongooseCollection.name }))
-  console.log(key)
 
   //See we have a value for key
   const cacheValue = await client.hget(this.hashKey, key)
@@ -31,11 +30,12 @@ mongoose.Query.prototype.exec = async function () { // must use function keyword
   // Yes -> return the value
   if (cacheValue) {
     const doc = JSON.parse(cacheValue)
+    console.log('from cached value')
     return Array.isArray(doc) ? doc.map(doc => new this.model(doc)) : new this.model(doc)
   }
 
   const result = await exec.apply(this, arguments)
-  await client.hset(this.hashKey, JSON.stringify(result), 'EX', 10)
+  await client.hset(this.hashKey, key, JSON.stringify(result))
   return result
 }
 

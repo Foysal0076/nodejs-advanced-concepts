@@ -1,5 +1,9 @@
 const puppeteer = require("puppeteer")
 
+const sessionFactory = require('./factories/session-factory')
+const userFactory = require('./factories/user-factory')
+const Page = require('./helpers/page')
+
 let browser, page
 
 beforeEach(async () => {
@@ -28,22 +32,12 @@ test('clicking login starts OAuth flow', async () => {
   expect(url).toMatch(/accounts\.google\.com/)
 })
 
-test.only('when signed in show the logout button', async () => {
-  const user = '673026b41fa044502bfa280c'
-  const Buffer = require('safe-buffer').Buffer
-  const session = {
-    passport: {
-      user
-    }
-  }
-  const sessionString = Buffer.from(JSON.stringify(session)).toString('base64')
+test('when signed in show the logout button', async () => {
+  // const user = '673026b41fa044502bfa280c'
+  const user = await userFactory()
+  const { session, sig } = sessionFactory(user)
 
-  const Keygrip = require('keygrip')
-  const keys = require('../config/keys')
-  const keygrip = new Keygrip([keys.cookieKey])
-  const sig = keygrip.sign(`session=${sessionString}`)
-  console.log(sessionString, sig)
-  await page.setCookie({ name: 'session', value: sessionString })
+  await page.setCookie({ name: 'session', value: session })
   await page.setCookie({ name: 'session.sig', value: sig })
   await page.goto('http://localhost:3000')
   await page.waitFor('a[href="/auth/logout"]')

@@ -1,4 +1,6 @@
 const puppeteer = require('puppeteer')
+const userFactory = require('../factories/user-factory')
+const sessionFactory = require('../factories/session-factory')
 
 class CustomPage {
   static async build() {
@@ -13,7 +15,7 @@ class CustomPage {
 
     return new Proxy(customPage, {
       get: function (target, property) {
-        return customPage[property] || browser[property] || page[property]
+        return target[property] || browser[property] || page[property]
       }
     })
   }
@@ -21,6 +23,16 @@ class CustomPage {
   constructor(page, browser) {
     this.page = page
     this.browser = browser
+  }
+
+  async login() {
+    const user = await userFactory()
+    const { session, sig } = sessionFactory(user)
+
+    await this.page.setCookie({ name: 'session', value: session })
+    await this.page.setCookie({ name: 'session.sig', value: sig })
+    await this.page.goto('http://localhost:3000')
+    await this.page.waitFor('a[href="/auth/logout"]')
   }
 
 }

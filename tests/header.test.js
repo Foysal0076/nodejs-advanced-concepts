@@ -6,7 +6,6 @@ let page
 beforeEach(async () => {
   page = await Page.build()
   await page.goto('http://localhost:3000')
-
 })
 
 afterEach(async () => {
@@ -19,6 +18,7 @@ test('Header Logo has the correct text', async () => {
 })
 
 test('clicking login starts OAuth flow', async () => {
+  await page.waitFor('.right a')
   await page.click('.right a')
   const url = await page.url()
   expect(url).toMatch(/accounts\.google\.com/)

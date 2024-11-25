@@ -4,10 +4,15 @@ const sessionFactory = require('../factories/session-factory')
 
 class CustomPage {
   static async build() {
+    // const browser = await puppeteer.launch({
+    //   headless: true,
+    //   defaultViewport: null,
+    //   executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    // })
     const browser = await puppeteer.launch({
       headless: true,
       defaultViewport: null,
-      executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     })
 
     const page = await browser.newPage()

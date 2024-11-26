@@ -1,11 +1,11 @@
-module.exports = {
-  googleClientID:
-    '70265989829-0t7m7ce5crs6scqd3t0t6g7pv83ncaii.apps.googleusercontent.com',
-  googleClientSecret: '8mkniDQOqacXtlRD3gA4n2az',
-  mongoURI:
-    'mongodb+srv://foysal:3697@cluster0.58juz.mongodb.net/nodeadvance?retryWrites=true&w=majority&appName=Cluster0',
-  cookieKey: 'advancednode',
-  redisUrl: 'redis://127.0.0.1:6379',
-}
+require('dotenv').config()
 
-// E2ATtFCBgJS0GnVp
+module.exports = {
+  googleClientID: process.env.GOOGLE_CLIENT_ID,
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  mongoURI: process.env.MONGO_URI,
+  cookieKey: process.env.COOKIE_KEY,
+  redisUrl: process.env.REDIS_URL,
+  s3AccessKey: process.env.S3_ACCESS_KEY,
+  s3SecretAccessKey: process.env.S3_SECRET_ACCESS_KEY
+}
